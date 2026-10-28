@@ -1,4 +1,3 @@
-// ====== Данные ======
 const INITIAL_SCOOTERS = [
   { id: 'GC-1001', name: 'Самокат #1001', description: 'Лёгкий городской самокат для коротких поездок по центру.', tariff: 'start', tariffName: 'Старт', pricePerMin: 5, charge: 92, x: 180, y: 140, busy: false },
   { id: 'GC-1002', name: 'Самокат #1002', description: 'Мощный самокат с увеличенным запасом хода.', tariff: 'comfort', tariffName: 'Комфорт', pricePerMin: 4, charge: 65, x: 340, y: 100, busy: true },
@@ -15,7 +14,6 @@ const SCOOTERS_KEY = 'gocity_scooters_v2';
 
 let state = { scooters: [], bookings: [], selectedId: null, filters: { charge: 'all', tariff: 'all' } };
 
-// ====== Storage ======
 function loadFromStorage() {
   try {
     const s = localStorage.getItem(SCOOTERS_KEY);
@@ -54,7 +52,6 @@ function notify(text, type = 'info') {
   setTimeout(() => n.remove(), 3000);
 }
 
-// ====== Render ======
 function getFiltered() {
   return state.scooters.filter(s => {
     if (state.filters.charge !== 'all' && s.charge < parseInt(state.filters.charge)) return false;
@@ -224,7 +221,6 @@ function renderAll() {
   renderBookings();
 }
 
-// ====== Logic ======
 function select(id) {
   const s = state.scooters.find(x => x.id === id);
   if (!s || s.busy) return;
@@ -311,7 +307,6 @@ function resetAll() {
   notify('Данные сброшены', 'info');
 }
 
-// ====== Init ======
 function init() {
   loadFromStorage();
 
