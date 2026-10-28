@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GO·CITY — Аренда самокатов</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="header__inner">
+      <div class="logo">
+        <span class="logo__mark"></span>
+        <span class="logo__text">GO·CITY</span>
+      </div>
+      <div class="header__meta">
+        <span class="header__city">Москва, Центр</span>
+        <span class="header__user">Алексей</span>
+      </div>
+      <button class="btn-ghost" id="resetBtn" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Сброс
+      </button>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero__content">
+        <div class="hero__tag">
+          <span class="hero__dot"></span>
+          LIVE · 8 САМОКАТОВ РЯДОМ
+        </div>
+        <h1 class="hero__title">Выбери самокат.<br/>Поехали.</h1>
+        <p class="hero__subtitle">Аренда от 3 ₽/мин. Без залога. Без регистрации.</p>
+      </div>
+    </section>
+
+    <!-- Фильтры -->
+    <section class="filters" aria-label="Фильтры">
+      <div class="filter-group">
+        <label for="chargeFilter" class="filter-label">Заряд</label>
+        <select id="chargeFilter" class="select">
+          <option value="all">Любой</option>
+          <option value="80">От 80%</option>
+          <option value="50">От 50%</option>
+          <option value="20">От 20%</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="tariffFilter" class="filter-label">Тариф</label>
+        <select id="tariffFilter" class="select">
+          <option value="all">Любой</option>
+          <option value="start">Старт · 5 ₽/мин</option>
+          <option value="comfort">Комфорт · 4 ₽/мин</option>
+          <option value="max">Максимум · 3 ₽/мин</option>
+        </select>
+      </div>
+      <button class="btn-ghost-dark" id="clearFilters" type="button">Сбросить</button>
+    </section>
+
+    <div class="layout">
+      <!-- Левая колонка -->
+      <div class="left-col">
+        <!-- Схема -->
+        <section class="map-section" aria-label="Схема района">
+          <div class="section-head">
+            <h2 class="section-title">Карта района</h2>
+            <span class="section-count" id="scooterCount">8</span>
+          </div>
+          <div class="map-wrapper">
+            <svg class="map" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Схема района">
+              <rect width="800" height="500" fill="#f0f0ec"/>
+
+              <!-- Парк -->
+              <rect x="50" y="50" width="200" height="150" rx="8" fill="#e4ecd8"/>
+              <text x="150" y="130" text-anchor="middle" font-size="12" fill="#6b7a5a" font-family="Helvetica, Arial, sans-serif" font-weight="500">Парк «Зелёный»</text>
+
+              <!-- Озеро -->
+              <ellipse cx="650" cy="120" rx="90" ry="55" fill="#d8e8ec"/>
+              <text x="650" y="125" text-anchor="middle" font-size="12" fill="#5a7a8a" font-family="Helvetica, Arial, sans-serif" font-weight="500">Озеро</text>
+
+              <!-- Здания -->
+              <rect x="320" y="60" width="120" height="90" rx="4" fill="#e8e8e4"/>
+              <rect x="460" y="40" width="100" height="110" rx="4" fill="#e4e4e0"/>
+              <rect x="600" y="280" width="140" height="100" rx="4" fill="#e8e8e4"/>
+              <rect x="80" y="300" width="160" height="120" rx="4" fill="#e4e4e0"/>
+
+              <!-- Дороги -->
+              <rect x="0" y="230" width="800" height="40" fill="#dcdcd8"/>
+              <rect x="280" y="0" width="40" height="500" fill="#dcdcd8"/>
+              <rect x="520" y="0" width="40" height="500" fill="#dcdcd8"/>
+
+              <line x1="0" y1="250" x2="800" y2="250" stroke="#fff" stroke-width="1.5" stroke-dasharray="8,8"/>
+              <line x1="300" y1="0" x2="300" y2="500" stroke="#fff" stroke-width="1.5" stroke-dasharray="8,8"/>
+              <line x1="540" y1="0" x2="540" y2="500" stroke="#fff" stroke-width="1.5" stroke-dasharray="8,8"/>
+
+              <g id="scooterMarkers"></g>
+
+              <!-- Легенда -->
+              <g transform="translate(20, 440)">
+                <rect width="240" height="44" rx="6" fill="#fff" stroke="#e0e0e0" stroke-width="1"/>
+                <circle cx="22" cy="15" r="6" fill="#c8ff00" stroke="#0a0a0a" stroke-width="1.5"/>
+                <text x="36" y="19" font-size="11" font-family="Helvetica, Arial, sans-serif" fill="#0a0a0a">Свободен</text>
+                <circle cx="110" cy="15" r="6" fill="#0a0a0a" stroke="#c8ff00" stroke-width="1.5"/>
+                <text x="124" y="19" font-size="11" font-family="Helvetica, Arial, sans-serif" fill="#0a0a0a">Занят</text>
+                <circle cx="22" cy="33" r="6" fill="#fff" stroke="#c8ff00" stroke-width="2.5"/>
+                <text x="36" y="37" font-size="11" font-family="Helvetica, Arial, sans-serif" fill="#0a0a0a">Выбран</text>
+              </g>
+            </svg>
+          </div>
+        </section>
+
+        <!-- Список -->
+        <section class="list-section" aria-label="Список самокатов">
+          <div class="section-head">
+            <h2 class="section-title">Самокаты</h2>
+          </div>
+          <div class="scooter-list" id="scooterList" role="list"></div>
+          <div class="empty-state" id="emptyState" hidden>
+            <p class="empty-state__text">Нет самокатов по выбранным фильтрам</p>
+            <button class="btn-ghost-dark" id="clearFiltersList" type="button">Сбросить фильтры</button>
+          </div>
+        </section>
+      </div>
+
+      <!-- Правая колонка -->
+      <div class="right-col">
+        <!-- Карточка -->
+        <section class="card-section" id="cardSection" aria-label="Карточка самоката">
+          <div class="placeholder" id="placeholder">
+            <div class="placeholder__ring">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            </div>
+            <h3 class="placeholder__title">Выберите самокат</h3>
+            <p class="placeholder__text">Нажмите на маркер на карте или карточку в списке</p>
+          </div>
+
+          <div class="card" id="card" hidden>
+            <div class="card__head">
+              <div>
+                <div class="card__id" id="cardId">—</div>
+                <h3 class="card__title" id="cardTitle">—</h3>
+              </div>
+              <div class="card__badge" id="cardStatus">—</div>
+            </div>
+
+            <div class="card__grid">
+              <div class="stat">
+                <div class="stat__label">Заряд</div>
+                <div class="stat__value" id="cardCharge">—</div>
+                <div class="charge-bar"><div class="charge-bar__fill" id="chargeFill"></div></div>
+              </div>
+              <div class="stat">
+                <div class="stat__label">Тариф</div>
+                <div class="stat__value" id="cardPrice">—</div>
+                <div class="stat__sub" id="cardTariff">—</div>
+              </div>
+              <div class="stat stat--wide">
+                <div class="stat__label">Описание</div>
+                <p class="stat__text" id="cardDesc">—</p>
+              </div>
+            </div>
+
+            <form class="booking-form" id="bookingForm" novalidate>
+              <div class="form-group">
+                <label for="minutes" class="form-label">Время аренды, мин</label>
+                <input type="number" id="minutes" class="input" min="1" max="120" value="30" required />
+                <div class="form-hint">От 1 до 120 минут</div>
+                <div class="error-msg" id="minutesError" role="alert"></div>
+              </div>
+
+              <div class="total">
+                <span class="total__label">Итого</span>
+                <span class="total__value" id="totalPrice">0 ₽</span>
+              </div>
+
+              <button type="submit" class="btn-primary" id="confirmBtn">Забронировать</button>
+            </form>
+          </div>
+        </section>
+
+        <!-- Брони -->
+        <section class="bookings-section" aria-label="Мои брони">
+          <div class="section-head">
+            <h2 class="section-title">Мои брони</h2>
+            <span class="section-count" id="bookingsCount">0</span>
+          </div>
+          <div class="bookings-list" id="bookingsList"></div>
+          <div class="empty-bookings" id="emptyBookings">
+            <p>У вас пока нет бронирований</p>
+          </div>
+        </section>
+
+        <!-- Демо-подпись -->
+        <div class="demo-notice" role="note">
+          <span class="demo-notice__mark"></span>
+          <div>
+            <strong>Учебное демо</strong>
+            <p>Бронирования сохраняются только в этом браузере. Реального запуска самоката и оплаты нет.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
