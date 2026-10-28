@@ -4,7 +4,208 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GO·CITY — Аренда самокатов</title>
-  <link rel="stylesheet" href="styles.css" />
+  <style>
+    :root {
+      --lime: #c8ff00;
+      --lime-dim: #a8d600;
+      --black: #0a0a0a;
+      --gray-900: #1a1a1a;
+      --gray-700: #4a4a4a;
+      --gray-500: #8a8a8a;
+      --gray-300: #c8c8c8;
+      --gray-100: #f0f0ec;
+      --white: #ffffff;
+      --danger: #ff3b30;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background: var(--gray-100);
+      color: var(--black);
+      line-height: 1.4;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+    }
+
+    .header { background: var(--black); color: var(--white); padding: 14px 24px; position: sticky; top: 0; z-index: 100; }
+    .header__inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; gap: 20px; }
+    .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; letter-spacing: -0.02em; }
+    .logo__mark { width: 10px; height: 10px; background: var(--lime); border-radius: 50%; }
+    .header__meta { flex: 1; display: flex; gap: 20px; font-size: 13px; color: var(--gray-300); }
+    .header__user { color: var(--white); font-weight: 500; }
+    .btn-ghost {
+      background: transparent; color: var(--gray-300); border: 1px solid var(--gray-700);
+      padding: 7px 14px; border-radius: var(--radius-sm); cursor: pointer; font-size: 13px;
+      font-family: inherit; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: all 0.2s;
+    }
+    .btn-ghost:hover { color: var(--lime); border-color: var(--lime); }
+
+    .main { max-width: 1280px; margin: 0 auto; padding: 32px 24px 48px; }
+    .hero { margin-bottom: 32px; }
+    .hero__tag {
+      display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.1em; color: var(--gray-500); text-transform: uppercase; margin-bottom: 16px;
+    }
+    .hero__dot { width: 6px; height: 6px; background: var(--lime); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .hero__title { font-size: 56px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 12px; }
+    .hero__subtitle { font-size: 17px; color: var(--gray-700); font-weight: 400; }
+    @media (max-width: 600px) { .hero__title { font-size: 36px; } .hero__subtitle { font-size: 15px; } }
+
+    .filters {
+      background: var(--white); padding: 16px 20px; border-radius: var(--radius);
+      display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 24px; border: 1px solid #e4e4e0;
+    }
+    .filter-group { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 160px; }
+    .filter-label { font-size: 11px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.08em; }
+    .select, .input {
+      padding: 10px 12px; border: 1px solid #e0e0e0; border-radius: var(--radius-sm);
+      font-size: 14px; font-family: inherit; background: var(--white); color: var(--black); transition: border-color 0.2s; width: 100%;
+    }
+    .select:focus, .input:focus { outline: none; border-color: var(--black); }
+    .btn-ghost-dark {
+      background: transparent; color: var(--black); border: 1px solid var(--gray-300);
+      padding: 10px 16px; border-radius: var(--radius-sm); cursor: pointer; font-size: 13px;
+      font-family: inherit; font-weight: 500; transition: all 0.2s; white-space: nowrap;
+    }
+    .btn-ghost-dark:hover { background: var(--black); color: var(--white); border-color: var(--black); }
+
+    .layout { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; }
+    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+    .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; gap: 12px; }
+    .section-title { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+    .section-count { font-size: 13px; color: var(--gray-500); font-weight: 500; }
+
+    .map-section { background: var(--white); padding: 20px; border-radius: var(--radius); border: 1px solid #e4e4e0; margin-bottom: 24px; }
+    .map-wrapper { border-radius: var(--radius-sm); overflow: hidden; border: 1px solid #e8e8e4; }
+    .map { width: 100%; height: auto; display: block; }
+    .scooter-marker { cursor: pointer; transition: transform 0.2s; }
+    .scooter-marker:hover { transform: scale(1.2); }
+    .scooter-marker:focus { outline: 2px solid var(--lime); outline-offset: 3px; }
+    .marker-free { fill: var(--lime); stroke: var(--black); stroke-width: 1.5; }
+    .marker-busy { fill: var(--black); stroke: var(--lime); stroke-width: 1.5; }
+    .marker-selected { fill: var(--white); stroke: var(--lime); stroke-width: 3; }
+
+    .list-section { background: var(--white); padding: 20px; border-radius: var(--radius); border: 1px solid #e4e4e0; }
+    .scooter-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; }
+    .scooter-item {
+      background: var(--gray-100); border: 1px solid transparent; border-radius: var(--radius-sm);
+      padding: 14px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px;
+    }
+    .scooter-item:hover { border-color: var(--black); background: var(--white); }
+    .scooter-item:focus { outline: 2px solid var(--lime); outline-offset: 2px; }
+    .scooter-item.selected { border-color: var(--black); background: var(--black); color: var(--white); }
+    .scooter-item.busy { opacity: 0.4; cursor: not-allowed; }
+    .scooter-item.busy:hover { border-color: transparent; background: var(--gray-100); }
+    .scooter-dot {
+      width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; flex-shrink: 0; font-size: 11px; font-weight: 700;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+    .scooter-dot.free { background: var(--lime); color: var(--black); }
+    .scooter-dot.busy { background: var(--black); color: var(--lime); }
+    .scooter-dot.selected { background: var(--lime); color: var(--black); border: 2px solid var(--white); }
+    .scooter-info { flex: 1; min-width: 0; }
+    .scooter-name { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+    .scooter-meta { font-size: 12px; color: var(--gray-500); }
+    .scooter-item.selected .scooter-meta { color: var(--gray-300); }
+    .scooter-price { font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums; }
+    .empty-state, .empty-bookings { text-align: center; padding: 32px 16px; color: var(--gray-500); font-size: 14px; }
+    .empty-state__text { margin-bottom: 12px; }
+
+    .card-section { background: var(--black); color: var(--white); padding: 24px; border-radius: var(--radius); margin-bottom: 24px; min-height: 320px; }
+    .placeholder { text-align: center; padding: 48px 20px; }
+    .placeholder__ring {
+      width: 64px; height: 64px; border-radius: 50%; background: var(--gray-900);
+      display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px; color: var(--gray-500);
+    }
+    .placeholder__title { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--white); }
+    .placeholder__text { font-size: 14px; color: var(--gray-500); }
+    .card { animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .card__head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; gap: 12px; }
+    .card__id { font-size: 11px; color: var(--gray-500); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; font-weight: 500; }
+    .card__title { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+    .card__badge {
+      padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap;
+    }
+    .card__badge.free { background: var(--lime); color: var(--black); }
+    .card__badge.busy { background: var(--gray-900); color: var(--gray-300); border: 1px solid var(--gray-700); }
+    .card__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+    .stat { background: var(--gray-900); padding: 14px; border-radius: var(--radius-sm); }
+    .stat--wide { grid-column: 1 / -1; }
+    .stat__label { font-size: 10px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; font-weight: 600; }
+    .stat__value { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+    .stat__sub { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+    .stat__text { font-size: 13px; color: var(--gray-300); line-height: 1.5; }
+    .charge-bar { height: 4px; background: var(--gray-700); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+    .charge-bar__fill { height: 100%; background: var(--lime); border-radius: 2px; transition: width 0.3s; }
+
+    .booking-form { border-top: 1px solid var(--gray-900); padding-top: 20px; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-500); margin-bottom: 8px; }
+    .form-hint { font-size: 11px; color: var(--gray-500); margin-top: 6px; }
+    .error-msg { color: var(--danger); font-size: 12px; margin-top: 6px; min-height: 16px; }
+    .input.error { border-color: var(--danger); }
+    .input-dark { background: var(--gray-900); border-color: var(--gray-700); color: var(--white); }
+    .input-dark:focus { border-color: var(--lime); }
+    .total { display: flex; justify-content: space-between; align-items: baseline; padding: 16px 0; margin-bottom: 16px; border-top: 1px solid var(--gray-900); }
+    .total__label { font-size: 13px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+    .total__value { font-size: 32px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; color: var(--lime); }
+    .btn-primary {
+      width: 100%; background: var(--lime); color: var(--black); border: none; padding: 16px;
+      border-radius: var(--radius-sm); font-size: 14px; font-weight: 700; cursor: pointer;
+      transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.08em; font-family: inherit;
+    }
+    .btn-primary:hover { background: var(--lime-dim); transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .bookings-section { background: var(--white); padding: 20px; border-radius: var(--radius); border: 1px solid #e4e4e0; margin-bottom: 24px; }
+    .bookings-list { display: flex; flex-direction: column; gap: 10px; }
+    .booking-item {
+      background: var(--gray-100); border-left: 3px solid var(--lime); border-radius: var(--radius-sm);
+      padding: 14px 16px; animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
+    .booking-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; flex-wrap: wrap; gap: 6px; }
+    .booking-id { font-weight: 600; font-size: 13px; letter-spacing: 0.04em; }
+    .booking-total { font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; }
+    .booking-details { font-size: 12px; color: var(--gray-500); margin-bottom: 10px; }
+    .btn-cancel {
+      background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 5px 12px;
+      border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 600; font-family: inherit;
+      text-transform: uppercase; letter-spacing: 0.06em; transition: all 0.2s;
+    }
+    .btn-cancel:hover { background: var(--danger); color: var(--white); }
+
+    /* ====== Demo notice ====== */
+    .demo-notice {
+      display: flex; gap: 12px; padding: 14px 16px; background: var(--white);
+      border: 1px solid #e4e4e0; border-radius: var(--radius-sm); font-size: 12px; color: var(--gray-700);
+    }
+    .demo-notice__mark { width: 4px; background: var(--lime); border-radius: 2px; flex-shrink: 0; }
+    .demo-notice strong { display: block; color: var(--black); font-weight: 600; margin-bottom: 2px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .demo-notice p { margin: 0; line-height: 1.4; }
+
+    @media (max-width: 600px) {
+      .main { padding: 20px 16px 32px; }
+      .header { padding: 12px 16px; }
+      .header__meta { display: none; }
+      .filters { flex-direction: column; align-items: stretch; }
+      .filter-group { min-width: 100%; }
+      .scooter-list { grid-template-columns: 1fr; }
+      .card__grid { grid-template-columns: 1fr; }
+      .card__title { font-size: 20px; }
+      .total__value { font-size: 26px; }
+      .hero__title { font-size: 32px; }
+    }
+    button:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+  </style>
 </head>
 <body>
   <header class="header">
@@ -15,7 +216,7 @@
       </div>
       <div class="header__meta">
         <span class="header__city">Москва, Центр</span>
-        <span class="header__user">Алексей</span>
+        <span class="header__user">Гость</span>
       </div>
       <button class="btn-ghost" id="resetBtn" type="button">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
@@ -68,30 +269,21 @@
           <div class="map-wrapper">
             <svg class="map" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Схема района">
               <rect width="800" height="500" fill="#f0f0ec"/>
-
               <rect x="50" y="50" width="200" height="150" rx="8" fill="#e4ecd8"/>
               <text x="150" y="130" text-anchor="middle" font-size="12" fill="#6b7a5a" font-family="Helvetica, Arial, sans-serif" font-weight="500">Парк «Зелёный»</text>
-
               <ellipse cx="650" cy="120" rx="90" ry="55" fill="#d8e8ec"/>
               <text x="650" y="125" text-anchor="middle" font-size="12" fill="#5a7a8a" font-family="Helvetica, Arial, sans-serif" font-weight="500">Озеро</text>
-
-
               <rect x="320" y="60" width="120" height="90" rx="4" fill="#e8e8e4"/>
               <rect x="460" y="40" width="100" height="110" rx="4" fill="#e4e4e0"/>
               <rect x="600" y="280" width="140" height="100" rx="4" fill="#e8e8e4"/>
               <rect x="80" y="300" width="160" height="120" rx="4" fill="#e4e4e0"/>
-
               <rect x="0" y="230" width="800" height="40" fill="#dcdcd8"/>
               <rect x="280" y="0" width="40" height="500" fill="#dcdcd8"/>
               <rect x="520" y="0" width="40" height="500" fill="#dcdcd8"/>
-
               <line x1="0" y1="250" x2="800" y2="250" stroke="#fff" stroke-width="1.5" stroke-dasharray="8,8"/>
               <line x1="300" y1="0" x2="300" y2="500" stroke="#fff" stroke-width="1.5" stroke-dasharray="8,8"/>
               <line x1="540" y1="0" x2="540" y2="500" stroke="#fff" stroke-width="1.5" stroke-dasharray="8,8"/>
-
               <g id="scooterMarkers"></g>
-
-              <!-- Легенда -->
               <g transform="translate(20, 440)">
                 <rect width="240" height="44" rx="6" fill="#fff" stroke="#e0e0e0" stroke-width="1"/>
                 <circle cx="22" cy="15" r="6" fill="#c8ff00" stroke="#0a0a0a" stroke-width="1.5"/>
@@ -117,9 +309,7 @@
         </section>
       </div>
 
-      <!-- Правая колонка -->
       <div class="right-col">
-        <!-- Карточка -->
         <section class="card-section" id="cardSection" aria-label="Карточка самоката">
           <div class="placeholder" id="placeholder">
             <div class="placeholder__ring">
@@ -158,7 +348,7 @@
             <form class="booking-form" id="bookingForm" novalidate>
               <div class="form-group">
                 <label for="minutes" class="form-label">Время аренды, мин</label>
-                <input type="number" id="minutes" class="input" min="1" max="120" value="30" required />
+                <input type="number" id="minutes" class="input input-dark" min="1" max="120" value="30" required />
                 <div class="form-hint">От 1 до 120 минут</div>
                 <div class="error-msg" id="minutesError" role="alert"></div>
               </div>
@@ -172,7 +362,6 @@
             </form>
           </div>
         </section>
-
 
         <section class="bookings-section" aria-label="Мои брони">
           <div class="section-head">
@@ -196,6 +385,332 @@
     </div>
   </main>
 
-  <script src="javascript.js"></script>
+  <script>
+    const INITIAL_SCOOTERS = [
+      { id: 'GC-1001', name: 'Самокат #1001', description: 'Лёгкий городской самокат для коротких поездок по центру.', tariff: 'start', tariffName: 'Старт', pricePerMin: 5, charge: 92, x: 180, y: 140, busy: false },
+      { id: 'GC-1002', name: 'Самокат #1002', description: 'Мощный самокат с увеличенным запасом хода.', tariff: 'comfort', tariffName: 'Комфорт', pricePerMin: 4, charge: 65, x: 340, y: 100, busy: true },
+      { id: 'GC-1003', name: 'Самокат #1003', description: 'Спортивная модель с хорошей амортизацией.', tariff: 'max', tariffName: 'Максимум', pricePerMin: 3, charge: 48, x: 560, y: 90, busy: false },
+      { id: 'GC-1004', name: 'Самокат #1004', description: 'Новый самокат с максимальным зарядом батареи.', tariff: 'start', tariffName: 'Старт', pricePerMin: 5, charge: 100, x: 700, y: 180, busy: false },
+      { id: 'GC-1005', name: 'Самокат #1005', description: 'Компактный самокат для быстрых перемещений.', tariff: 'comfort', tariffName: 'Комфорт', pricePerMin: 4, charge: 25, x: 120, y: 360, busy: false },
+      { id: 'GC-1006', name: 'Самокат #1006', description: 'Усиленная модель для долгих поездок.', tariff: 'max', tariffName: 'Максимум', pricePerMin: 3, charge: 78, x: 360, y: 380, busy: true },
+      { id: 'GC-1007', name: 'Самокат #1007', description: 'Премиум-самокат с мягким ходом.', tariff: 'comfort', tariffName: 'Комфорт', pricePerMin: 4, charge: 55, x: 580, y: 340, busy: false },
+      { id: 'GC-1008', name: 'Самокат #1008', description: 'Бюджетный вариант для студентов.', tariff: 'max', tariffName: 'Максимум', pricePerMin: 3, charge: 15, x: 720, y: 420, busy: false }
+    ];
+
+    const STORAGE_KEY = 'gocity_bookings_v3';
+    const SCOOTERS_KEY = 'gocity_scooters_v3';
+
+    let state = { scooters: [], bookings: [], selectedId: null, filters: { charge: 'all', tariff: 'all' } };
+
+    function loadFromStorage() {
+      try {
+        const s = localStorage.getItem(SCOOTERS_KEY);
+        const b = localStorage.getItem(STORAGE_KEY);
+        state.scooters = s ? JSON.parse(s) : JSON.parse(JSON.stringify(INITIAL_SCOOTERS));
+        state.bookings = b ? JSON.parse(b) : [];
+      } catch (e) {
+        state.scooters = JSON.parse(JSON.stringify(INITIAL_SCOOTERS));
+        state.bookings = [];
+        notify('Не удалось загрузить данные', 'warn');
+      }
+    }
+
+    function saveToStorage() {
+      try {
+        localStorage.setItem(SCOOTERS_KEY, JSON.stringify(state.scooters));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.bookings));
+      } catch (e) {
+        notify('Не удалось сохранить данные', 'error');
+      }
+    }
+
+    function notify(text, type = 'info') {
+      const n = document.createElement('div');
+      n.textContent = text;
+      n.style.cssText = `
+        position: fixed; top: 80px; right: 20px; z-index: 1000;
+        padding: 12px 18px; border-radius: 8px; font-size: 13px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        background: ${type === 'error' ? '#ff3b30' : type === 'warn' ? '#0a0a0a' : '#0a0a0a'};
+        color: ${type === 'error' ? '#fff' : '#c8ff00'};
+        box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        animation: fadeIn 0.3s ease;
+        font-weight: 500;
+      `;
+      document.body.appendChild(n);
+      setTimeout(() => n.remove(), 3000);
+    }
+
+    function getFiltered() {
+      return state.scooters.filter(s => {
+        if (state.filters.charge !== 'all' && s.charge < parseInt(state.filters.charge)) return false;
+        if (state.filters.tariff !== 'all' && s.tariff !== state.filters.tariff) return false;
+        return true;
+      });
+    }
+
+    function statusText(s) {
+      if (s.busy) return 'Занят';
+      if (state.selectedId === s.id) return 'Выбран';
+      return 'Свободен';
+    }
+
+    function renderMap() {
+      const g = document.getElementById('scooterMarkers');
+      g.innerHTML = '';
+      const filtered = getFiltered();
+      const ids = new Set(filtered.map(s => s.id));
+
+      state.scooters.forEach(s => {
+        const el = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        el.classList.add('scooter-marker');
+        el.setAttribute('transform', `translate(${s.x}, ${s.y})`);
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('role', 'button');
+        el.setAttribute('aria-label', `${s.name}, ${statusText(s)}`);
+
+        let cls = 'marker-free';
+        if (s.busy) cls = 'marker-busy';
+        else if (state.selectedId === s.id) cls = 'marker-selected';
+
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('r', '12');
+        circle.setAttribute('class', cls);
+
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('y', '4');
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('font-size', '9');
+        text.setAttribute('font-weight', '700');
+        text.setAttribute('font-family', 'Helvetica, Arial, sans-serif');
+        text.setAttribute('fill', s.busy ? '#c8ff00' : '#0a0a0a');
+        text.textContent = s.id.split('-')[1];
+
+        el.appendChild(circle);
+        el.appendChild(text);
+
+        if (!s.busy && ids.has(s.id)) {
+          el.addEventListener('click', () => select(s.id));
+          el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(s.id); } });
+        }
+        g.appendChild(el);
+      });
+    }
+
+    function renderList() {
+      const list = document.getElementById('scooterList');
+      const empty = document.getElementById('emptyState');
+      const count = document.getElementById('scooterCount');
+      list.innerHTML = '';
+      const filtered = getFiltered();
+      count.textContent = filtered.length;
+
+      if (filtered.length === 0) { empty.hidden = false; return; }
+      empty.hidden = true;
+
+      filtered.forEach(s => {
+        const item = document.createElement('div');
+        item.className = 'scooter-item';
+        item.setAttribute('role', 'listitem');
+        item.setAttribute('tabindex', '0');
+        item.setAttribute('aria-label', `${s.name}, ${statusText(s)}`);
+        if (s.busy) item.classList.add('busy');
+        else if (state.selectedId === s.id) item.classList.add('selected');
+
+        const dotCls = s.busy ? 'busy' : state.selectedId === s.id ? 'selected' : 'free';
+        const num = s.id.split('-')[1];
+
+        item.innerHTML = `
+          <div class="scooter-dot ${dotCls}">${num}</div>
+          <div class="scooter-info">
+            <div class="scooter-name">${s.name}</div>
+            <div class="scooter-meta">${s.tariffName} · ${s.charge}%</div>
+          </div>
+          <div class="scooter-price">${s.pricePerMin} ₽/мин</div>
+        `;
+
+        if (!s.busy) {
+          item.addEventListener('click', () => select(s.id));
+          item.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(s.id); } });
+        }
+        list.appendChild(item);
+      });
+    }
+
+    function renderCard() {
+      const ph = document.getElementById('placeholder');
+      const card = document.getElementById('card');
+
+      if (!state.selectedId) { ph.hidden = false; card.hidden = true; return; }
+
+      const s = state.scooters.find(x => x.id === state.selectedId);
+      if (!s) { ph.hidden = false; card.hidden = true; state.selectedId = null; return; }
+
+      const filtered = getFiltered();
+      if (!filtered.find(x => x.id === s.id)) {
+        notify('Выбранный самокат скрыт фильтром', 'warn');
+        state.selectedId = null;
+        renderAll();
+        return;
+      }
+
+      ph.hidden = true;
+      card.hidden = false;
+
+      document.getElementById('cardId').textContent = s.id;
+      document.getElementById('cardTitle').textContent = s.name;
+      document.getElementById('cardDesc').textContent = s.description;
+      document.getElementById('cardCharge').textContent = `${s.charge}%`;
+      document.getElementById('cardPrice').textContent = `${s.pricePerMin} ₽`;
+      document.getElementById('cardTariff').textContent = s.tariffName;
+
+      const badge = document.getElementById('cardStatus');
+      badge.textContent = s.busy ? 'Занят' : 'Свободен';
+      badge.className = `card__badge ${s.busy ? 'busy' : 'free'}`;
+
+      document.getElementById('chargeFill').style.width = `${s.charge}%`;
+      document.getElementById('bookingForm').hidden = s.busy;
+
+      if (!s.busy) updateTotal();
+    }
+
+    function renderBookings() {
+      const list = document.getElementById('bookingsList');
+      const empty = document.getElementById('emptyBookings');
+      const count = document.getElementById('bookingsCount');
+      list.innerHTML = '';
+      count.textContent = state.bookings.length;
+
+      if (state.bookings.length === 0) { empty.hidden = false; return; }
+      empty.hidden = true;
+
+      state.bookings.forEach(b => {
+        const item = document.createElement('div');
+        item.className = 'booking-item';
+        item.innerHTML = `
+          <div class="booking-header">
+            <span class="booking-id">${b.id}</span>
+            <span class="booking-total">${b.total} ₽</span>
+          </div>
+          <div class="booking-details">${b.scooterName} · ${b.minutes} мин</div>
+          <button class="btn-cancel" data-booking="${b.id}" type="button">Отменить</button>
+        `;
+        list.appendChild(item);
+      });
+
+      list.querySelectorAll('.btn-cancel').forEach(btn => {
+        btn.addEventListener('click', () => cancel(btn.dataset.booking));
+      });
+    }
+
+    function renderAll() {
+      renderMap();
+      renderList();
+      renderCard();
+      renderBookings();
+    }
+
+    function select(id) {
+      const s = state.scooters.find(x => x.id === id);
+      if (!s || s.busy) return;
+      state.selectedId = id;
+      renderAll();
+      if (window.innerWidth <= 900) {
+        document.getElementById('cardSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function updateTotal() {
+      const s = state.scooters.find(x => x.id === state.selectedId);
+      if (!s || s.busy) return;
+      const min = parseInt(document.getElementById('minutes').value) || 0;
+      const el = document.getElementById('totalPrice');
+      if (min < 1 || min > 120) { el.textContent = '—'; return; }
+      el.textContent = `${min * s.pricePerMin} ₽`;
+    }
+
+    function validate() {
+      const inp = document.getElementById('minutes');
+      const err = document.getElementById('minutesError');
+      const v = parseInt(inp.value);
+      inp.classList.remove('error');
+      err.textContent = '';
+
+      if (!state.selectedId) { err.textContent = 'Выберите самокат'; return false; }
+      const s = state.scooters.find(x => x.id === state.selectedId);
+      if (!s || s.busy) { err.textContent = 'Самокат недоступен'; return false; }
+      if (isNaN(v) || v < 1) { inp.classList.add('error'); err.textContent = 'Минимум 1 минута'; return false; }
+      if (v > 120) { inp.classList.add('error'); err.textContent = 'Максимум 120 минут'; return false; }
+      return true;
+    }
+
+    function createBooking() {
+      if (!validate()) return;
+      const s = state.scooters.find(x => x.id === state.selectedId);
+      const min = parseInt(document.getElementById('minutes').value);
+      const total = min * s.pricePerMin;
+
+      if (state.bookings.find(b => b.scooterId === s.id && !b.cancelled)) {
+        notify('Этот самокат уже забронирован', 'error');
+        return;
+      }
+
+      const b = {
+        id: `BK-${Date.now().toString(36).toUpperCase()}`,
+        scooterId: s.id,
+        scooterName: s.name,
+        minutes: min,
+        total,
+        createdAt: new Date().toISOString(),
+        cancelled: false
+      };
+
+      state.bookings.push(b);
+      s.busy = true;
+      state.selectedId = null;
+      saveToStorage();
+      renderAll();
+      notify(`Бронь ${b.id} создана`, 'info');
+    }
+
+    function cancel(id) {
+      const b = state.bookings.find(x => x.id === id);
+      if (!b || b.cancelled) return;
+      if (!confirm(`Отменить бронь ${id}?`)) return;
+      b.cancelled = true;
+      const s = state.scooters.find(x => x.id === b.scooterId);
+      if (s) s.busy = false;
+      saveToStorage();
+      renderAll();
+      notify(`Бронь ${id} отменена`, 'warn');
+    }
+
+    function resetAll() {
+      if (!confirm('Сбросить все данные?')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(SCOOTERS_KEY);
+      state.scooters = JSON.parse(JSON.stringify(INITIAL_SCOOTERS));
+      state.bookings = [];
+      state.selectedId = null;
+      renderAll();
+      notify('Данные сброшены', 'info');
+    }
+
+    function init() {
+      loadFromStorage();
+
+      document.getElementById('chargeFilter').addEventListener('change', (e) => { state.filters.charge = e.target.value; renderAll(); });
+      document.getElementById('tariffFilter').addEventListener('change', (e) => { state.filters.tariff = e.target.value; renderAll(); });
+      document.getElementById('clearFilters').addEventListener('click', () => { state.filters = { charge: 'all', tariff: 'all' }; document.getElementById('chargeFilter').value = 'all'; document.getElementById('tariffFilter').value = 'all'; renderAll(); });
+      document.getElementById('clearFiltersList').addEventListener('click', () => { state.filters = { charge: 'all', tariff: 'all' }; document.getElementById('chargeFilter').value = 'all'; document.getElementById('tariffFilter').value = 'all'; renderAll(); });
+
+      document.getElementById('minutes').addEventListener('input', () => { updateTotal(); document.getElementById('minutesError').textContent = ''; document.getElementById('minutes').classList.remove('error'); });
+      document.getElementById('bookingForm').addEventListener('submit', (e) => { e.preventDefault(); createBooking(); });
+      document.getElementById('resetBtn').addEventListener('click', resetAll);
+
+      renderAll();
+    }
+
+    init();
+  </script>
 </body>
 </html>
