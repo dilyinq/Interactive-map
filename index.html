@@ -25,7 +25,6 @@
   </header>
 
   <main class="main">
-    <!-- Hero -->
     <section class="hero">
       <div class="hero__content">
         <div class="hero__tag">
@@ -37,7 +36,6 @@
       </div>
     </section>
 
-    <!-- Фильтры -->
     <section class="filters" aria-label="Фильтры">
       <div class="filter-group">
         <label for="chargeFilter" class="filter-label">Заряд</label>
@@ -61,9 +59,7 @@
     </section>
 
     <div class="layout">
-      <!-- Левая колонка -->
       <div class="left-col">
-        <!-- Схема -->
         <section class="map-section" aria-label="Схема района">
           <div class="section-head">
             <h2 class="section-title">Карта района</h2>
@@ -73,21 +69,18 @@
             <svg class="map" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Схема района">
               <rect width="800" height="500" fill="#f0f0ec"/>
 
-              <!-- Парк -->
               <rect x="50" y="50" width="200" height="150" rx="8" fill="#e4ecd8"/>
               <text x="150" y="130" text-anchor="middle" font-size="12" fill="#6b7a5a" font-family="Helvetica, Arial, sans-serif" font-weight="500">Парк «Зелёный»</text>
 
-              <!-- Озеро -->
               <ellipse cx="650" cy="120" rx="90" ry="55" fill="#d8e8ec"/>
               <text x="650" y="125" text-anchor="middle" font-size="12" fill="#5a7a8a" font-family="Helvetica, Arial, sans-serif" font-weight="500">Озеро</text>
 
-              <!-- Здания -->
+
               <rect x="320" y="60" width="120" height="90" rx="4" fill="#e8e8e4"/>
               <rect x="460" y="40" width="100" height="110" rx="4" fill="#e4e4e0"/>
               <rect x="600" y="280" width="140" height="100" rx="4" fill="#e8e8e4"/>
               <rect x="80" y="300" width="160" height="120" rx="4" fill="#e4e4e0"/>
 
-              <!-- Дороги -->
               <rect x="0" y="230" width="800" height="40" fill="#dcdcd8"/>
               <rect x="280" y="0" width="40" height="500" fill="#dcdcd8"/>
               <rect x="520" y="0" width="40" height="500" fill="#dcdcd8"/>
@@ -112,7 +105,6 @@
           </div>
         </section>
 
-        <!-- Список -->
         <section class="list-section" aria-label="Список самокатов">
           <div class="section-head">
             <h2 class="section-title">Самокаты</h2>
@@ -181,7 +173,7 @@
           </div>
         </section>
 
-        <!-- Брони -->
+
         <section class="bookings-section" aria-label="Мои брони">
           <div class="section-head">
             <h2 class="section-title">Мои брони</h2>
@@ -192,18 +184,6 @@
             <p>У вас пока нет бронирований</p>
           </div>
         </section>
-
-        <!-- Демо-подпись -->
-        <div class="demo-notice" role="note">
-          <span class="demo-notice__mark"></span>
-          <div>
-            <strong>Учебное демо</strong>
-            <p>Бронирования сохраняются только в этом браузере. Реального запуска самоката и оплаты нет.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
 
   <script type="module" src="js/app.js"></script>
 </body>
